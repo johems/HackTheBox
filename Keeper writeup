@@ -3,7 +3,10 @@
 # Local host file
 
 ```bash
-**********************************************(johems㉿BeastJohe)-[~/HB/Keeper] $ sudo vim /etc/hosts**********************************************
+*********************************************
+(johems㉿)-[~/HB/Keeper] $ sudo vim /etc/hosts
+
+**********************************************
 
 **10.129.92.38 kepper.htb tickets.keeper.htb**
 ```
@@ -11,7 +14,10 @@
 # Subfolders in domain
 
 ```bash
-**********************************************(johems㉿BeastJohe)-[~/HB/Keeper]********************************************** gobuster dir -u http://tickets.keeper.htb/rt/ -w big.txt -b 302,404                                                                     │
+**********************************************
+(johems㉿)-[~/HB/Keeper gobuster dir -u http://tickets.keeper.htb/rt/ -w big.txt -b 302,404     
+
+]**********************************************│
 ```
 
 # Login
@@ -84,3 +90,11 @@ Notes: PuTTY-User-Key-File-3: ssh-rsa
 ```
 
 # puttygen-  lagre filen i notepad
+
+I linux 
+puttygen test.ppk -O private-openssh -o deployment_key
+
+ssh -i deployment_key root@10.129.92.38
+
+root@keeper:~# whoami
+root
